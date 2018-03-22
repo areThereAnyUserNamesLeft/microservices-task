@@ -8,9 +8,9 @@ import (
 )
 
 type User struct {
-	Id          int64  `db:"id" json:"id"`
-	EventStatus string `db:"event_status" json:"event_status"`
-	EventName   string `db:"event_name" json:"event_name"`
+	Id         int64  `db:"id" json:"id"`
+	UserStatus string `db:"user_status" json:"user_status"`
+	UserName   string `db:"user_name" json:"user_name"`
 }
 
 var dbmap = initDb()
@@ -35,9 +35,9 @@ func GetUser(c *gin.Context) {
 		user_id, _ := strconv.ParseInt(id, 0, 64)
 
 		content := &User{
-			Id:          user_id,
-			EventStatus: user.EventStatus,
-			EventName:   user.EventName,
+			Id:         user_id,
+			UserStatus: user.UserStatus,
+			UserName:   user.UserName,
 		}
 
 		c.JSON(200, content)
@@ -51,14 +51,14 @@ func PostUser(c *gin.Context) {
 	var user User
 	c.Bind(&user)
 
-	if user.EventStatus != "" && user.EventName != "" {
-		if insert, _ := dbmap.Exec(`INSERT INTO user (event_status, event_name) VALUES (?, ?)`, user.EventStatus, user.EventName); insert != nil {
+	if user.UserStatus != "" && user.UserName != "" {
+		if insert, _ := dbmap.Exec(`INSERT INTO user (user_status, user_name) VALUES (?, ?)`, user.UserStatus, user.UserName); insert != nil {
 			user_id, err := insert.LastInsertId()
 			if err == nil {
 				content := &User{
-					Id:          user_id,
-					EventStatus: user.EventStatus,
-					EventName:   user.EventName,
+					Id:         user_id,
+					UserStatus: user.UserStatus,
+					UserName:   user.UserName,
 				}
 				c.JSON(201, content)
 			} else {
@@ -68,7 +68,7 @@ func PostUser(c *gin.Context) {
 	} else {
 		c.JSON(422, gin.H{"error": "fields are empty"})
 	}
-	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"event_status\": \"83\", \"event_name\": \"100\" }" http://localhost:8080/api/v1/users
+	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_status\": \"83\", \"user_name\": \"100\" }" http://localhost:8080/api/v1/users
 }
 
 func UpdateUser(c *gin.Context) {
@@ -81,12 +81,12 @@ func UpdateUser(c *gin.Context) {
 		c.Bind(&json)
 		user_id, _ := strconv.ParseInt(id, 0, 64)
 		user := User{
-			Id:          user_id,
-			EventStatus: json.EventStatus,
-			EventName:   json.EventName,
+			Id:         user_id,
+			UserStatus: json.UserStatus,
+			UserName:   json.UserName,
 		}
 
-		if user.EventStatus != "" && user.EventName != "" {
+		if user.UserStatus != "" && user.UserName != "" {
 			_, err = dbmap.Update(&user)
 
 			if err == nil {
@@ -100,7 +100,7 @@ func UpdateUser(c *gin.Context) {
 	} else {
 		c.JSON(404, gin.H{"error": "user not found"})
 	}
-	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"event_status\": \"83\", \"event_name\": \"100\" }" http://localhost:8080/api/v1/users/1
+	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"user_status\": \"83\", \"user_name\": \"100\" }" http://localhost:8080/api/v1/users/1
 }
 
 func DeleteUser(c *gin.Context) {

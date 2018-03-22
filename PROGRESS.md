@@ -42,7 +42,7 @@ I've not used MySQL in a little while having moved to Arch Linux, who as a commu
 
 - **Plan Aii)**
 
-Look at dockerized versions of MySQL - probably should have used this as my first approch **there is a lesson to be learnt here**...
+Look at dockerized versions of MySQL - probably should have used this as my first approch *there is a lesson to be learnt here*...
 
 - **Plan B)**
 
@@ -53,6 +53,7 @@ If it seems like a non starter by around Lunchtime, I'll  look to remove the MyS
 **Choice made** - I downloaded a copy of MySQL from the AUR (Arch user repo) [https://aur.archlinux.org/packages/mysql/](https://aur.archlinux.org/packages/mysql/) but it seems like it will need an unklnown amount of troubleshooting around chroot environments and permissions - in short a potential time suck.
 
 Considering dockerized versions of MySQL [https://hub.docker.com/_/mysql/](https://hub.docker.com/_/mysql/) - Hitting some issues with Docker now so time for a system reboot...
+
 ###### ~1230
 
 **Dockers working now!**
@@ -69,3 +70,31 @@ Name:`userAPI-mysql`
 MySQL version: `8`
 
 password: `oranges`
+
+CLI connect command:
+`docker run -it --link userAPI-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'``
+
+###### ~1310 LunchTime
+
+Before admitting defeat and turning to plan B as MySQL is throwing an error. I am going to create a fresh image with an older version of MySQL as 8 seems to have a new plugin(!?! - latest is not always best) and throws this error...
+
+`ERROR 2059 (HY000): Authentication plugin 'caching_sha2_password' cannot be loaded: /usr/lib/mysql/plugin/caching_sha2_password.so: cannot open shared object file: No such file or directory`
+
+Launched command:
+
+`sudo docker run --name microservice-mysql -e MYSQL_ROOT_PASSWORD=oranges -d mysql:5.7`
+
+Containeer Number:`dcdfac0fe16a7b2608ba7c7ffd8d5bc4165e0faf1047cb17edc9ed3ddae36bf2`
+
+Name:`microservice-mysql`
+
+MySQL version: `5.7`
+
+password: `oranges`
+
+CLI connect command:
+`docker run -it --link microservice-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'``
+
+###### ~1320
+
+**I'm in to mySQL CLI** - *Lesson here - MySQL 8 needs a plugin to avoid SHA2 password encryption error and docker hub documentation out of date currently around this!*

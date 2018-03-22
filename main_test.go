@@ -47,7 +47,7 @@ func TestPostUser(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	testRouter := SetupRouter()
 
-	body := bytes.NewBuffer([]byte("{\"event_status\": \"83\", \"event_name\": \"100\"}"))
+	body := bytes.NewBuffer([]byte("{\"user_status\": \"83\", \"user_name\": \"100\"}"))
 
 	req, err := http.NewRequest("POST", "/api/v1/users", body)
 	req.Header.Set("Content-Type", "application/json")
@@ -67,7 +67,7 @@ func TestPutUser(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	testRouter := SetupRouter()
 
-	body := bytes.NewBuffer([]byte("{\"event_status\": \"83\", \"event_name\": \"100\"}"))
+	body := bytes.NewBuffer([]byte("{\"user_status\": \"83\", \"user_name\": \"100\"}"))
 
 	req, err := http.NewRequest("PUT", "/api/v1/users/1", body)
 	req.Header.Set("Content-Type", "application/json")
