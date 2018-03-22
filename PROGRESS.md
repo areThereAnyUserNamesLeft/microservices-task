@@ -211,3 +211,7 @@ Returns =>
 Now both get requests are behaving
 
 ###### ~2150 Post request working - now UPDATE
+
+Made a delete function while working on update
+
+###### ~2230 Delete working now for update

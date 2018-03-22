@@ -3,7 +3,6 @@ package app
 import (
 	"bufio"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -193,10 +192,8 @@ func PostUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	id := c.Params.ByName("id")
-	un := c.Params.ByName("user_name")
-	us := c.Params.ByName("user_status")
-	ud := c.Params.ByName("date")
 	var user User
+	c.Bind(&user)
 	var data = []string{id, user.UserName, user.UserStatus, user.Date}
 	var ru = returnUsers()
 	var allUsers = [][]string{}
@@ -208,8 +205,7 @@ func UpdateUser(c *gin.Context) {
 			allUsers = append(allUsers, u)
 		}
 	}
-	fmt.Println(un)
-	if un != "" || us != "" || ud != "" {
+	if user.UserName != "" || user.UserStatus != "" || user.Date != "" {
 		file, err := os.Create("users.csv")
 		checkError("Cannot create file", err)
 		defer file.Close()
