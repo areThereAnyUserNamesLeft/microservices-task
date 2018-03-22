@@ -34,12 +34,22 @@ Borrow API code from [http://himarsh.org/build-restful-api-microservice-with-go/
 
 ###### ~1100
 
-Code refactored and all seems to be running. The example I chose to use has a MySQL DB running locally and serving on port :3306 - I guess I need to make that now.
+Code refactored and all seems to be running. The example I chose to use has a MySQL DB running locally and serving on port :3306 (as usual) - I guess I need to make that now.
 
-- **Plan A)**
+- **~~Plan Ai)~~**
 
-I've not used MySQL in a little while having moved to Arch Linux who as a community use MariaDB over MySQL creates a blocker, so I've got some work to do here to make sure it is working locally.
+I've not used MySQL in a little while having moved to Arch Linux, who as a community use MariaDB over MySQL - see [https://wiki.archlinux.org/index.php/MySQL](https://wiki.archlinux.org/index.php/MySQL). This creates a blocker, so I've got some work to do here to make sure it is working locally.
+
+- **Plan Aii)**
+
+Look at dockerized versions of MySQL - probably should have used this as my first approch **there is a lesson to be learnt here**...
 
 - **Plan B)**
 
-If it seems likle a nos starter by Lunch, I'll  look to remove the MySQL DB from the boilerplate and replace it with text file or Json file as storage to allow me to look at other features - this also has an advantage of not requiring Sipsynergy to configure a DB for looking at the project
+If it seems like a non starter by around Lunchtime, I'll  look to remove the MySQL DB from the boilerplate and replace it with text file or Json file as storage to allow me to look at other features - this also has an advantage of not requiring Sipsynergy to configure a DB for looking at the project.
+
+###### ~1200
+
+**Choice made** - I downloaded a copy of MySQL from the AUR (Arch user repo) [https://aur.archlinux.org/packages/mysql/](https://aur.archlinux.org/packages/mysql/) but it seems like it will need an unklnown amount of troubleshooting around chroot environments and permissions - in short a potential time suck.
+
+Considering dockerized versions of MySQL [https://hub.docker.com/_/mysql/](https://hub.docker.com/_/mysql/) - Hitting some issues with Docker now so time for a system reboot...
