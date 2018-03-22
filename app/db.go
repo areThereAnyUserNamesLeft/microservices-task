@@ -1,8 +1,8 @@
-package app
+//package app
 
-import (
-	_ "github.com/go-sql-driver/mysql"
-)
+//import (
+//	_ "github.com/go-sql-driver/mysql"
+//)
 
 // func initDb() *gorp.DbMap {
 // 	db, err := sql.Open("mysql", "root:orange@tcp(172.17.0.4)/USERS")

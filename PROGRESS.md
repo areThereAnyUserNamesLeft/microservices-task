@@ -1,8 +1,16 @@
 # My Progress - Richard Pape
 
-I am choosing to use Go for the backend as it seems a good choice bearing in mind the JD - I can't say I have built a microservice aside from cloud functions so I am enjoying this as a challenge.
+I am choosing to use Go for the backend as it seems a good choice bearing in mind the JD - I can't say I have built a microservice aside from cloud functions on AWS so I am enjoying this as a challenge.
 
-#### Task breakdown
+## TL;DR
+
+I did not finish 100%, in fact I finished the API but had a plan to use a MySQL DB which sucked up a lot of time and really was not nesessary for the small scale of the task - In the end I implemented a nice little protocol that writes to a CSV and altered it 5 different ways. for 5 different calls covering the full CRUD spectrum.
+
+There is a Task breakdown below followed by a rough time line I put together to "show my workings" - I Really have tried to be honest as I can and not try to hide any bad decissions I made as I think it is only fair.
+
+I'm going to try and build it as a Docker image now and then I think I will draw a line under this.
+
+### Task breakdown & initial thoughts
 
 1. build MS
 
@@ -215,3 +223,26 @@ Now both get requests are behaving
 Made a delete function while working on update
 
 ###### ~2230 Delete working now for update
+
+OK finally managed to do some coding and the API is working flawlessly
+
+Although I think the update function will allow a user to update with blank values.
+
+#### Have a play ---
+
+If you `go run main.go` you can have a play using the following curls
+
+- `curl -i http://localhost:8080/api/v1/users`
+    - Should give a list of users in Json...
+- `curl -i http://localhost:8080/api/v1/users/1`
+    - Should just give you one user...
+- `curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_status\": \"No longer potus\", \"user_name\": \"Donald Trump\", "date": "04-11-2020" }" http://localhost:8080/api/v1/users`
+    - Will create a new user
+- `curl -i -X PUT -H "Content-Type: application/json" -d "{ \"user_status\": \"Potus\", \"user_name\": \"Donald Trump\", \"date\": \"01-04-2018\" }" http://localhost:8080/api/v1/users/3
+`   
+    - Will update all of the fields
+
+- `curl -i -X DELETE http://localhost:8080/api/v1/users/3`
+    - Will remove the person at id number 3
+
+You'll see the affects in the users.csv file which took the place of the DB as each of these are called.
