@@ -5,7 +5,7 @@
 1. build MS
 
     Ideas
- - **Restful or gRPC?** Restful asa I am only just getting to grips with gRPC and would not want to spoil an oppertunity just to be showing off that I know something fancy.
+ - **Restful or gRPC?** Restful as I am only just getting to grips with gRPC and would not want to spoil an oppertunity just to be showing off that I think know something fancy better than I really do.
 
  Use suggested endpoints - I'll use these as they'll tick the boxes:
 
@@ -28,11 +28,11 @@
 
 ##### Where I can I'll cut corners for speed and not introduce complication of writing from scratch?
 
-###### ~0930
+###### ~0930 Planning / Research
 
-Borrow API code from [http://himarsh.org/build-restful-api-microservice-with-go/](http://himarsh.org/build-restful-api-microservice-with-go/) as a boilerplate for a RestAPI and Tests. Also kind of documented which is nice. This pretty much covers the backend of the project brief and on closer inspection has a Dockerfile ready and waiting in the accompanying repo. Taking the pressure off my writing code and allowing me to just refactor and repurpose what is here into a useable API for my nafarious purposes (Mwa ha ha ha ha...).
+Borrowed API code from [http://himarsh.org/build-restful-api-microservice-with-go/](http://himarsh.org/build-restful-api-microservice-with-go/) as a boilerplate for a RestAPI and Tests. Also kind of documented which is nice. This pretty much covers the backend of the project brief and on closer inspection has a Dockerfile ready and waiting in the accompanying repo. Taking the pressure off my writing code and allowing me to just refactor and repurpose what is here into a useable API for my nafarious purposes (Mwa ha ha ha ha...).
 
-###### ~1100
+###### ~1100 Copy/Paste/Refactor - DB Choices
 
 Code refactored and all seems to be running. The example I chose to use has a MySQL DB running locally and serving on port :3306 (as usual) - I guess I need to make that now.
 
@@ -48,13 +48,13 @@ Look at dockerized versions of MySQL - probably should have used this as my firs
 
 If it seems like a non starter by around Lunchtime, I'll  look to remove the MySQL DB from the boilerplate and replace it with text file or Json file as storage to allow me to look at other features - this also has an advantage of not requiring Sipsynergy to configure a DB for looking at the project.
 
-###### ~1200
+###### ~1200 Choice Made!
 
 **Choice made** - I downloaded a copy of MySQL from the AUR (Arch user repo) [https://aur.archlinux.org/packages/mysql/](https://aur.archlinux.org/packages/mysql/) but it seems like it will need an unklnown amount of troubleshooting around chroot environments and permissions - in short a potential time suck.
 
 Considering dockerized versions of MySQL [https://hub.docker.com/_/mysql/](https://hub.docker.com/_/mysql/) - Hitting some issues with Docker now so time for a system reboot...
 
-###### ~1230
+###### ~1230 Docker nightmare (turned out to be MySql versioning)
 
 **Dockers working now!**
 For my reference-
@@ -74,7 +74,7 @@ password: `oranges`
 CLI connect command:
 `docker run -it --link userAPI-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'``
 
-###### ~1310 LunchTime
+###### ~1310 LunchTime - One last try!
 
 Before admitting defeat and turning to plan B as MySQL is throwing an error. I am going to create a fresh image with an older version of MySQL as 8 seems to have a new plugin(!?! - latest is not always best) and throws this error...
 
@@ -95,11 +95,11 @@ password: `oranges`
 CLI connect command:
 `docker run -it --link microservice-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'``
 
-###### ~1320
+###### ~1320 Success
 
 **I'm in to mySQL CLI** - *Lesson here - MySQL 8 needs a plugin to avoid SHA2 password encryption error and docker hub documentation out of date currently around this!*
 
-###### ~1330
+###### ~1330 Database sculpting
 
 ### DB build:
 
@@ -117,3 +117,51 @@ Manual commands - I might get to putting these isn a dockerfile but right now I'
 
 `create table users(id BIGINT NOT NULL AUTO_INCREMENT, user_name VARCHAR(100) NOT NULL, user_status VARCHAR(40), date DATE, PRIMARY KEY (id));
 `
+
+`insert into USERS (user_name, user_status,date) VALUES ("Richard Pape", "Present", NOW());
+`
+
+` select * from users;`
+
+<pre>+----+--------------+-------------+------------+
+| id | user_name    | user_status | date       |
++----+--------------+-------------+------------+
+|  1 | Richard Pape | Present     | 2018-03-22 |
++----+--------------+-------------+------------+
+</pre>
+
+###### ~1400 Connecting stuff and E2E API testing
+
+Run: `docker ps` and not container id
+
+Then: `docker inspect container_id | grep IPAddress`
+
+###### ~1500 Troubleshooting - So close
+
+Tests are failing to get to the DB with connection refused
+
+I have commented out the lines that try to create the DB in the db.go file so I get more meaning ful messages from the tests.
+
+ - GET  tests = 404s
+
+ - POST test  = 200
+ - PUT  test  = 404
+
+Curl comes back withthe same...
+
+ `curl -i http://localhost:8080/api/v1/users`
+
+<code>HTTP/1.1 404 Not Found
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Mar 2018 15:24:53 GMT
+Content-Length: 37
+{"error":"no user(s) into the table"}</code>
+
+2 ideas -
+
+1. Move on to dockerizing the Go app to link the application within containers. I believe that the connection could be refused due to the docker MySQL container not being given express permission.
+2. Keep trying to figure it out via Google searches
+
+I am going to choose option one as if I get to the point where I have it in a container then I have got closer to the target outcome.
+
+ 

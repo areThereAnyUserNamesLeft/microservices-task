@@ -52,7 +52,7 @@ func TestPostUser(t *testing.T) {
 	req, err := http.NewRequest("POST", "/api/v1/users", body)
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
-		t.Errorf("Post hearteat failed with error %d.", err)
+		t.Errorf("Post heartbeat failed with error %d.", err)
 	}
 
 	resp := httptest.NewRecorder()

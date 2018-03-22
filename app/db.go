@@ -9,11 +9,11 @@ import (
 )
 
 func initDb() *gorp.DbMap {
-	db, err := sql.Open("mysql", "root:password@/users")
+	db, err := sql.Open("mysql", "root:orange@tcp(172.17.0.4)/USERS")
 	checkErr(err, "sql.Open failed")
 
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
-	dbmap.AddTableWithName(User{}, "User").SetKeys(true, "Id")
+	dbmap.AddTableWithName(User{}, "Users").SetKeys(true, "Id")
 
 	err = dbmap.CreateTablesIfNotExists()
 	checkErr(err, "Create table failed")
