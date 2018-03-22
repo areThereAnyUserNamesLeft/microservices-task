@@ -16,9 +16,9 @@
 
 2. Dockerize
 
-    - Ubuntu
+    - Ubuntu?
     - MySQL
-    - GO
+    - GO?
     - ...
 
 3. Build UI
@@ -28,4 +28,18 @@
 
 ##### Where can I cut corners for speed and not introduce complication of writing from scratch?
 
-Borrow API code from [http://himarsh.org/build-restful-api-microservice-with-go/](http://himarsh.org/build-restful-api-microservice-with-go/) as a boilerplate for a RestAPI and Tests. Also kind of documented which is nice. This pretty much covers the backend of the project brief and has a Dockerfile ready and waiting in the accompanying repo. Taking the pressure off my writing code and allowingme to just refactor and repurpose.M
+###### ~0930
+
+Borrow API code from [http://himarsh.org/build-restful-api-microservice-with-go/](http://himarsh.org/build-restful-api-microservice-with-go/) as a boilerplate for a RestAPI and Tests. Also kind of documented which is nice. This pretty much covers the backend of the project brief and on closer inspection has a Dockerfile ready and waiting in the accompanying repo. Taking the pressure off my writing code and allowing me to just refactor and repurpose what is here into a useable API for my nafarious purposes (Mwa ha ha ha ha...).
+
+###### ~1100
+
+Code refactored and all seems to be running. The example I chose to use has a MySQL DB running locally and serving on port :3306 - I guess I need to make that now.
+
+- **Plan A)**
+
+I've not used MySQL in a little while having moved to Arch Linux who as a community use MariaDB over MySQL creates a blocker, so I've got some work to do here to make sure it is working locally.
+
+- **Plan B)**
+
+If it seems likle a nos starter by Lunch, I'll  look to remove the MySQL DB from the boilerplate and replace it with text file or Json file as storage to allow me to look at other features - this also has an advantage of not requiring Sipsynergy to configure a DB for looking at the project
