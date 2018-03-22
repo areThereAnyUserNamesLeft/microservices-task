@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"encoding/csv"
 	"io"
-	"log"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	//	_ "github.com/go-sql-driver/mysql"
@@ -29,7 +29,7 @@ func GetUsers(c *gin.Context) {
 		if error == io.EOF {
 			break
 		} else if error != nil {
-			log.Fatal(error)
+			c.JSON(404, gin.H{"error": "user not found"})
 		}
 		users = append(users, User{
 			Id:         line[0],
@@ -50,9 +50,30 @@ func GetUsers(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-	//id := c.Params.ByName("id")
-	//var user User
+	id := c.Params.ByName("id")
+	var user User
+	csvFile, _ := os.Open("users.csv")
+	reader := csv.NewReader(bufio.NewReader(csvFile))
+	for {
+		line, error := reader.Read()
+		if error == io.EOF {
+			break
+		} else if error != nil {
+			c.JSON(404, gin.H{"error": "user not found"})
+		}
+		//stringId := fmt.Scanf("%s", id)
+		if strings.TrimRight(id, "\n") == line[0] {
+			user = User{
+				Id:         line[0],
+				UserName:   line[1],
+				UserStatus: line[2],
+				Date:       line[3],
+			}
+		}
 
+	}
+
+	c.JSON(200, user)
 	// err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=?", id)
 	// if err == nil {
 	// 	user_id, _ := strconv.ParseInt(id, 0, 64)
@@ -67,7 +88,7 @@ func GetUser(c *gin.Context) {
 	// } else {
 	// 	c.JSON(404, gin.H{"error": "user not found"})
 	// }
-	// curl -i http://localhost:8080/api/v1/Users/1
+	// curl -i http://localhost:8080/api/v1/users/1
 }
 
 func PostUser(c *gin.Context) {

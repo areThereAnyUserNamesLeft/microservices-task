@@ -15,7 +15,7 @@ func TestGetUser(t *testing.T) {
 
 	req, err := http.NewRequest("GET", "/api/v1/users/1", nil)
 	if err != nil {
-		t.Errorf("Get hearteat failed with error %d.", err)
+		t.Errorf("Get heartbeat failed with error %d.", err)
 	}
 
 	resp := httptest.NewRecorder()
@@ -72,7 +72,7 @@ func TestPutUser(t *testing.T) {
 	req, err := http.NewRequest("PUT", "/api/v1/users/1", body)
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
-		t.Errorf("Put hearteat failed with error %d.", err)
+		t.Errorf("Put heartbeat failed with error %d.", err)
 	}
 
 	resp := httptest.NewRecorder()
