@@ -3,6 +3,7 @@ package app
 import (
 	"bufio"
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -191,8 +192,38 @@ func PostUser(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
-	//id := c.Params.ByName("id")
-	//var user User
+	id := c.Params.ByName("id")
+	un := c.Params.ByName("user_name")
+	us := c.Params.ByName("user_status")
+	ud := c.Params.ByName("date")
+	var user User
+	var data = []string{id, user.UserName, user.UserStatus, user.Date}
+	var ru = returnUsers()
+	var allUsers = [][]string{}
+	for _, userBody := range ru {
+		if strings.TrimRight(id, "\n") == userBody.Id {
+			allUsers = append(allUsers, data)
+		} else {
+			u := []string{userBody.Id, userBody.UserName, userBody.UserStatus, userBody.Date}
+			allUsers = append(allUsers, u)
+		}
+	}
+	fmt.Println(un)
+	if un != "" || us != "" || ud != "" {
+		file, err := os.Create("users.csv")
+		checkError("Cannot create file", err)
+		defer file.Close()
+
+		writer := csv.NewWriter(file)
+		defer writer.Flush()
+		for _, value := range allUsers {
+			err := writer.Write(value)
+			checkError("Cannot write to file", err)
+		}
+		c.JSON(200, user)
+	} else {
+		c.JSON(404, gin.H{"error": "user not found"})
+	}
 	// err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=?", id)
 	//
 	// if err == nil {
@@ -219,10 +250,40 @@ func UpdateUser(c *gin.Context) {
 	// } else {
 	// 	c.JSON(404, gin.H{"error": "user not found"})
 	// }
-	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"user_status\": \"83\", \"user_name\": \"100\" }" http://localhost:8080/api/v1/users/1
+	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"user_status\": \"\", \"user_name\": \"100\" }" http://localhost:8080/api/v1/users/1
+
+	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"user_status\": \"Slaying Giants\", \"user_name\": \"Don Quixote\", \"date\": \"03-07-1604\" }" http://localhost:8080/api/v1/users/3
+
 }
 
 func DeleteUser(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var user User
+
+	var data = []string{id, user.UserName, user.UserStatus, user.Date}
+	var ru = returnUsers()
+	var allUsers = [][]string{}
+	for _, userBody := range ru {
+		if strings.TrimRight(id, "\n") == userBody.Id {
+			allUsers = append(allUsers, data)
+		} else {
+			u := []string{userBody.Id, userBody.UserName, userBody.UserStatus, userBody.Date}
+			allUsers = append(allUsers, u)
+		}
+	}
+
+	file, err := os.Create("users.csv")
+	checkError("Cannot create file", err)
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+	for _, value := range allUsers {
+		err := writer.Write(value)
+		checkError("Cannot write to file", err)
+	}
+	c.JSON(200, user)
+
 	//id := c.Params.ByName("id")
 	//var user User
 	// err := dbmap.SelectOne(&user, "SELECT id FROM User WHERE id=?", id)
