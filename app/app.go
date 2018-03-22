@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Instruction struct {
+type User struct {
 	Id          int64  `db:"id" json:"id"`
 	EventStatus string `db:"event_status" json:"event_status"`
 	EventName   string `db:"event_name" json:"event_name"`
@@ -15,50 +15,50 @@ type Instruction struct {
 
 var dbmap = initDb()
 
-func GetInstructions(c *gin.Context) {
-	var instructions []Instruction
-	_, err := dbmap.Select(&instructions, "SELECT * FROM instruction")
+func GetUsers(c *gin.Context) {
+	var users []User
+	_, err := dbmap.Select(&users, "SELECT * FROM user")
 	if err == nil {
-		c.JSON(200, instructions)
+		c.JSON(200, users)
 	} else {
-		c.JSON(404, gin.H{"error": "no instruction(s) into the table"})
+		c.JSON(404, gin.H{"error": "no user(s) into the table"})
 	}
-	// curl -i http://localhost:8080/api/v1/instructions
+	// curl -i http://localhost:8080/api/v1/users
 }
 
-func GetInstruction(c *gin.Context) {
+func GetUser(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var instruction Instruction
+	var user User
 
-	err := dbmap.SelectOne(&instruction, "SELECT * FROM instruction WHERE id=?", id)
+	err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=?", id)
 	if err == nil {
-		instruction_id, _ := strconv.ParseInt(id, 0, 64)
+		user_id, _ := strconv.ParseInt(id, 0, 64)
 
-		content := &Instruction{
-			Id:          instruction_id,
-			EventStatus: instruction.EventStatus,
-			EventName:   instruction.EventName,
+		content := &User{
+			Id:          user_id,
+			EventStatus: user.EventStatus,
+			EventName:   user.EventName,
 		}
 
 		c.JSON(200, content)
 	} else {
-		c.JSON(404, gin.H{"error": "instruction not found"})
+		c.JSON(404, gin.H{"error": "user not found"})
 	}
-	// curl -i http://localhost:8080/api/v1/Instructions/1
+	// curl -i http://localhost:8080/api/v1/Users/1
 }
 
-func PostInstruction(c *gin.Context) {
-	var instruction Instruction
-	c.Bind(&instruction)
+func PostUser(c *gin.Context) {
+	var user User
+	c.Bind(&user)
 
-	if instruction.EventStatus != "" && instruction.EventName != "" {
-		if insert, _ := dbmap.Exec(`INSERT INTO instruction (event_status, event_name) VALUES (?, ?)`, instruction.EventStatus, instruction.EventName); insert != nil {
-			instruction_id, err := insert.LastInsertId()
+	if user.EventStatus != "" && user.EventName != "" {
+		if insert, _ := dbmap.Exec(`INSERT INTO user (event_status, event_name) VALUES (?, ?)`, user.EventStatus, user.EventName); insert != nil {
+			user_id, err := insert.LastInsertId()
 			if err == nil {
-				content := &Instruction{
-					Id:          instruction_id,
-					EventStatus: instruction.EventStatus,
-					EventName:   instruction.EventName,
+				content := &User{
+					Id:          user_id,
+					EventStatus: user.EventStatus,
+					EventName:   user.EventName,
 				}
 				c.JSON(201, content)
 			} else {
@@ -68,29 +68,29 @@ func PostInstruction(c *gin.Context) {
 	} else {
 		c.JSON(422, gin.H{"error": "fields are empty"})
 	}
-	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"event_status\": \"83\", \"event_name\": \"100\" }" http://localhost:8080/api/v1/instructions
+	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"event_status\": \"83\", \"event_name\": \"100\" }" http://localhost:8080/api/v1/users
 }
 
-func UpdateInstruction(c *gin.Context) {
+func UpdateUser(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var instruction Instruction
-	err := dbmap.SelectOne(&instruction, "SELECT * FROM instruction WHERE id=?", id)
+	var user User
+	err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=?", id)
 
 	if err == nil {
-		var json Instruction
+		var json User
 		c.Bind(&json)
-		instruction_id, _ := strconv.ParseInt(id, 0, 64)
-		instruction := Instruction{
-			Id:          instruction_id,
+		user_id, _ := strconv.ParseInt(id, 0, 64)
+		user := User{
+			Id:          user_id,
 			EventStatus: json.EventStatus,
 			EventName:   json.EventName,
 		}
 
-		if instruction.EventStatus != "" && instruction.EventName != "" {
-			_, err = dbmap.Update(&instruction)
+		if user.EventStatus != "" && user.EventName != "" {
+			_, err = dbmap.Update(&user)
 
 			if err == nil {
-				c.JSON(200, instruction)
+				c.JSON(200, user)
 			} else {
 				checkErr(err, "Updated failed")
 			}
@@ -98,18 +98,18 @@ func UpdateInstruction(c *gin.Context) {
 			c.JSON(422, gin.H{"error": "fields are empty"})
 		}
 	} else {
-		c.JSON(404, gin.H{"error": "instruction not found"})
+		c.JSON(404, gin.H{"error": "user not found"})
 	}
-	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"event_status\": \"83\", \"event_name\": \"100\" }" http://localhost:8080/api/v1/instructions/1
+	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"event_status\": \"83\", \"event_name\": \"100\" }" http://localhost:8080/api/v1/users/1
 }
 
-func DeleteInstruction(c *gin.Context) {
+func DeleteUser(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var instruction Instruction
-	err := dbmap.SelectOne(&instruction, "SELECT id FROM Instruction WHERE id=?", id)
+	var user User
+	err := dbmap.SelectOne(&user, "SELECT id FROM User WHERE id=?", id)
 
 	if err == nil {
-		_, err = dbmap.Delete(&instruction)
+		_, err = dbmap.Delete(&user)
 
 		if err == nil {
 			c.JSON(200, gin.H{"id #" + id: " deleted"})
@@ -117,7 +117,7 @@ func DeleteInstruction(c *gin.Context) {
 			checkErr(err, "Delete failed")
 		}
 	} else {
-		c.JSON(404, gin.H{"error": "instruction not found"})
+		c.JSON(404, gin.H{"error": "user not found"})
 	}
-	// curl -i -X DELETE http://localhost:8080/api/v1/instructions/1
+	// curl -i -X DELETE http://localhost:8080/api/v1/users/1
 }

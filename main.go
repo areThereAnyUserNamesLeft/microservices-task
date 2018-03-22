@@ -1,7 +1,8 @@
 package main
 
 import (
-	"./app"
+	"microservice-task/app"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,11 +11,11 @@ func SetupRouter() *gin.Engine {
 
 	v1 := router.Group("api/v1")
 	{
-		v1.GET("/users", app.Getusers)
-		v1.GET("/users/:id", app.GetInstruction)
-		v1.POST("/users", app.PostInstruction)
-		v1.PUT("/users/:id", app.UpdateInstruction)
-		v1.DELETE("/users/:id", app.DeleteInstruction)
+		v1.GET("/users", app.GetUsers)
+		v1.GET("/users/:id", app.GetUser)
+		v1.POST("/users", app.PostUser)
+		v1.PUT("/users/:id", app.UpdateUser)
+		v1.DELETE("/users/:id", app.DeleteUser)
 	}
 
 	return router
