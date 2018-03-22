@@ -53,3 +53,19 @@ If it seems like a non starter by around Lunchtime, I'll  look to remove the MyS
 **Choice made** - I downloaded a copy of MySQL from the AUR (Arch user repo) [https://aur.archlinux.org/packages/mysql/](https://aur.archlinux.org/packages/mysql/) but it seems like it will need an unklnown amount of troubleshooting around chroot environments and permissions - in short a potential time suck.
 
 Considering dockerized versions of MySQL [https://hub.docker.com/_/mysql/](https://hub.docker.com/_/mysql/) - Hitting some issues with Docker now so time for a system reboot...
+###### ~1230
+
+**Dockers working now!**
+For my reference-
+
+Launching with:
+
+`sudo docker run --name userAPI-mysql -e MYSQL_ROOT_PASSWORD=oranges -d mysql:8`
+
+Container number: `659d98a83fb2703d461db02be49a0ea782ff146a1349e9d13fe93fe9d67bbb8c`
+
+Name:`userAPI-mysql`
+
+MySQL version: `8`
+
+password: `oranges`
