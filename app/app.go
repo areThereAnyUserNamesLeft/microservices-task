@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"encoding/csv"
 	"io"
+	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -90,12 +92,85 @@ func GetUser(c *gin.Context) {
 	// }
 	// curl -i http://localhost:8080/api/v1/users/1
 }
+func checkError(message string, err error) {
+	if err != nil {
+		log.Fatal(message, err)
+	}
+}
 
+func increment() string {
+	csvFile, _ := os.Open("users.csv")
+	reader := csv.NewReader(bufio.NewReader(csvFile))
+	c := 0
+	for {
+		c++
+		_, error := reader.Read()
+		if error == io.EOF {
+			break
+		} else if error != nil {
+			log.Fatal(error)
+		}
+	}
+
+	return strconv.Itoa(c)
+}
+
+func returnUsers() []User {
+	var users []User
+	csvFile, _ := os.Open("users.csv")
+	reader := csv.NewReader(bufio.NewReader(csvFile))
+	for {
+		line, error := reader.Read()
+		if error == io.EOF {
+			break
+		} else if error != nil {
+			log.Fatal("error: user not found")
+		}
+		users = append(users, User{
+			Id:         line[0],
+			UserName:   line[1],
+			UserStatus: line[2],
+			Date:       line[3],
+		})
+	}
+	//usersJson, _ := json.Marshal(users)
+	return users
+	// _, err := dbmap.Select(&users, "SELECT * FROM user")
+	// if err == nil {
+	// 	c.JSON(200, users)
+	// } else {
+	// 	c.JSON(404, gin.H{"error": "no user(s) into the table"})
+	// }
+	// curl -i http://localhost:8080/api/v1/users
+}
 func PostUser(c *gin.Context) {
-	//var user User
-	//c.Bind(&user)
+	var user User
+	c.Bind(&user)
+	var data = []string{increment(), user.UserName, user.UserStatus, user.Date}
+	var ru = returnUsers()
+	var allUsers = [][]string{}
+	for _, userBody := range ru {
+		u := []string{userBody.Id, userBody.UserName, userBody.UserStatus, userBody.Date}
+		allUsers = append(allUsers, u)
+	}
+	allUsers = append(allUsers, data)
 
-	// if user.UserStatus != "" && user.UserName != "" {
+	if user.UserStatus != "" && user.UserName != "" {
+		file, err := os.Create("users.csv")
+		checkError("Cannot create file", err)
+		defer file.Close()
+
+		writer := csv.NewWriter(file)
+		defer writer.Flush()
+		for _, value := range allUsers {
+			err := writer.Write(value)
+			checkError("Cannot write to file", err)
+		}
+		c.JSON(201, user)
+	} else {
+		c.JSON(422, gin.H{"error": "fields are empty"})
+	}
+
 	// 	if insert, _ := dbmap.Exec(`INSERT INTO user (user_status, user_name) VALUES (?, ?)`, user.UserStatus, user.UserName); insert != nil {
 	// 		user_id, err := insert.LastInsertId()
 	// 		if err == nil {
@@ -112,7 +187,7 @@ func PostUser(c *gin.Context) {
 	// } else {
 	// 	c.JSON(422, gin.H{"error": "fields are empty"})
 	// }
-	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_status\": \"83\", \"user_name\": \"100\" }" http://localhost:8080/api/v1/users
+	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_status\": \"Chasing Windmills\", \"user_name\": \"Don Quixote\", "date": "01-07-1604" }" http://localhost:8080/api/v1/users
 }
 
 func UpdateUser(c *gin.Context) {

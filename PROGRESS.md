@@ -204,3 +204,8 @@ Running =>
 `curl -i http://localhost:8080/api/v1/users`
 Returns =>
 `[{"id":"1","user_name":" Richard Pape","user_status":" Present","date":" 22-03-2018"}]`
+
+
+###### ~2040 two down...
+
+Now both get requests are behaving
