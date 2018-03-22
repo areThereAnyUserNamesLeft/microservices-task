@@ -26,7 +26,7 @@
     - Not the crocodile closest to the boat right now
 
 
-##### Where can I cut corners for speed and not introduce complication of writing from scratch?
+##### Where I can I'll cut corners for speed and not introduce complication of writing from scratch?
 
 ###### ~0930
 
@@ -98,3 +98,22 @@ CLI connect command:
 ###### ~1320
 
 **I'm in to mySQL CLI** - *Lesson here - MySQL 8 needs a plugin to avoid SHA2 password encryption error and docker hub documentation out of date currently around this!*
+
+###### ~1330
+
+### DB build:
+
+I am going to make only one table with three columns as below
+
+### Table: USERS
+
+|columns name|id|user_name|user_status|date|
+|-|---|----------|------------|-|
+|**Data type**|*int64=>BIGINT*|*string=>varchar(100) |string=>varchar(40) (I considered a bool but may want more options so will make it a str)|date=>date|
+
+Manual commands - I might get to putting these isn a dockerfile but right now I'll put them here and add them to a config at the end...
+
+`CREATE DATABASE USERS`
+
+`create table users(id BIGINT NOT NULL AUTO_INCREMENT, user_name VARCHAR(100) NOT NULL, user_status VARCHAR(40), date DATE, PRIMARY KEY (id));
+`
