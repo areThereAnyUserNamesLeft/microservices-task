@@ -1,5 +1,7 @@
 # My Progress - Richard Pape
 
+I am choosing to use Go for the backend as it seems a good choice bearing in mind the JD - I can't say I have built a microservice aside from cloud functions so I am enjoying this as a challenge.
+
 #### Task breakdown
 
 1. build MS
@@ -149,7 +151,7 @@ I have commented out the lines that try to create the DB in the db.go file so I 
 
 Curl comes back withthe same...
 
- `curl -i http://localhost:8080/api/v1/users`
+ `docker `
 
 <code>HTTP/1.1 404 Not Found
 Content-Type: application/json; charset=utf-8
@@ -162,6 +164,37 @@ Content-Length: 37
 1. Move on to dockerizing the Go app to link the application within containers. I believe that the connection could be refused due to the docker MySQL container not being given express permission.
 2. Keep trying to figure it out via Google searches
 
-I am going to choose option one as if I get to the point where I have it in a container then I have got closer to the target outcome.
+I am going to choose option 1. as it is aligned with where I am heading anyway and if it seems more likely to be the issue.
 
- 
+building dockerfile went well
+
+Now first a bit of a brain break.
+
+###### ~1630 Off to the Kids Martial Arts Class
+
+![http://toonbarn.com/wordpress/wp-content/uploads/2011/08/Nickelodeon-and-IDW-unveil-new-Teenage-Mutant-Ninja-Turtles-comic-book.jpg](http://toonbarn.com/wordpress/wp-content/uploads/2011/08/Nickelodeon-and-IDW-unveil-new-Teenage-Mutant-Ninja-Turtles-comic-book.jpg)
+
+###### ~1830 Back from the Kids Martial Arts Class
+
+Give permissions for app to speak to DB
+
+`sudo docker run --name microservices-task --link microservice-mysql:mysql -d microservices-task`
+
+Then `ran docker inspect...`
+
+and got <code>            "SecondaryIPAddresses": null,
+"IPAddress": "",
+"IPAddress": "",
+</code> So it looks like I need to rebuild with a valid IP exposed rather than just a port!
+
+Looked at `docker logs xxx`
+
+and see my old friend
+
+`Create table failed dial tcp 172.17.0.4:3306: connect: connection refused`
+
+The program is running but does not reach the DB
+
+###### ~1930 Is it time for **plan B)**? - *kick MySQL to the kerb*
+
+I'd love to run MySQL as part of this but the brief does not require it and I have already spent 1/2 a day trying to get a good connection - It is not worth it bearing in mind the small scall of the DB needed - I am sad to say -I am going to build a flat file store and replace the DB connection, ***Really, Really big lesson I have learnt here*** but conversely I have built the docker container and it is working which is something worth while.
