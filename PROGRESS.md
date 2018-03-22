@@ -198,3 +198,9 @@ The program is running but does not reach the DB
 ###### ~1930 Is it time for **plan B)**? - *kick MySQL to the kerb*
 
 I'd love to run MySQL as part of this but the brief does not require it and I have already spent 1/2 a day trying to get a good connection - It is not worth it bearing in mind the small scall of the DB needed - I am sad to say -I am going to build a flat file store and replace the DB connection, ***Really, Really big lesson I have learnt here*** but conversely I have built the docker container and it is working which is something worth while.
+
+###### ~2015 Back on target - kicking myself for not admitting failiure earlier
+Running =>
+`curl -i http://localhost:8080/api/v1/users`
+Returns =>
+`[{"id":"1","user_name":" Richard Pape","user_status":" Present","date":" 22-03-2018"}]`

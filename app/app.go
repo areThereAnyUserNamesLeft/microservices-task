@@ -1,21 +1,45 @@
 package app
 
 import (
+	"bufio"
+	"encoding/csv"
+	"io"
+	"log"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	//	_ "github.com/go-sql-driver/mysql"
 )
 
 type User struct {
-	Id         int64  `db:"id" json:"id"`
-	UserStatus string `db:"user_status" json:"user_status"`
-	UserName   string `db:"user_name" json:"user_name"`
-	Date       string
+	Id         string `json:"id"`
+	UserName   string `json:"user_name"`
+	UserStatus string `json:"user_status"`
+	Date       string `json:"date"`
 }
 
 //var dbmap = initDb()
 
 func GetUsers(c *gin.Context) {
 	var users []User
+	csvFile, _ := os.Open("users.csv")
+	reader := csv.NewReader(bufio.NewReader(csvFile))
+	for {
+		line, error := reader.Read()
+		if error == io.EOF {
+			break
+		} else if error != nil {
+			log.Fatal(error)
+		}
+		users = append(users, User{
+			Id:         line[0],
+			UserName:   line[1],
+			UserStatus: line[2],
+			Date:       line[3],
+		})
+	}
+	//usersJson, _ := json.Marshal(users)
+	c.JSON(200, users)
 	// _, err := dbmap.Select(&users, "SELECT * FROM user")
 	// if err == nil {
 	// 	c.JSON(200, users)
@@ -26,8 +50,8 @@ func GetUsers(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var user User
+	//id := c.Params.ByName("id")
+	//var user User
 
 	// err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=?", id)
 	// if err == nil {
@@ -47,8 +71,8 @@ func GetUser(c *gin.Context) {
 }
 
 func PostUser(c *gin.Context) {
-	var user User
-	c.Bind(&user)
+	//var user User
+	//c.Bind(&user)
 
 	// if user.UserStatus != "" && user.UserName != "" {
 	// 	if insert, _ := dbmap.Exec(`INSERT INTO user (user_status, user_name) VALUES (?, ?)`, user.UserStatus, user.UserName); insert != nil {
@@ -71,8 +95,8 @@ func PostUser(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var user User
+	//id := c.Params.ByName("id")
+	//var user User
 	// err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=?", id)
 	//
 	// if err == nil {
@@ -103,8 +127,8 @@ func UpdateUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var user User
+	//id := c.Params.ByName("id")
+	//var user User
 	// err := dbmap.SelectOne(&user, "SELECT id FROM User WHERE id=?", id)
 	//
 	// if err == nil {
