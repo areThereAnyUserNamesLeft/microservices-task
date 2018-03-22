@@ -1,6 +1,7 @@
 FROM        golang:1.8
 MAINTAINER  Richard Pape <r1ch4rdp4p3@gmail.com>
 
+ENV
 ENV     PORT  8080
 
 # Setting up working directory
