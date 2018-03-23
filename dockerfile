@@ -10,7 +10,6 @@ ADD         . /go/src/gin-container
 RUN     go get github.com/tools/godep
 RUN     go get github.com/gin-gonic/gin
 RUN     go get gopkg.in/gorp.v1
-//RUN     go get github.com/go-sql-driver/mysql
 RUN     go install github.com/tools/godep
 RUN     go install github.com/gin-gonic/gin
 

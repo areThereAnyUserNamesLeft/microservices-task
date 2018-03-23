@@ -1,14 +1,16 @@
 # My Progress - Richard Pape
 
-I am choosing to use Go for the backend as it seems a good choice bearing in mind the JD - I can't say I have built a microservice aside from cloud functions on AWS so I am enjoying this as a challenge.
+I am choosing to use Go for the backend as it seems a good choice bearing in mind the JD - I can't say I have built a microservice aside from cloud functions on AWS Lambda and DynamoDB where alot of the work is done for you so I am enjoying this as a challenge.
 
 ## TL;DR
 
-I did not finish 100%, in fact I finished the API but had a plan to use a MySQL DB which sucked up a lot of time and really was not nesessary for the small scale of the task - In the end I implemented a nice little protocol that writes to a CSV and altered it 5 different ways. for 5 different calls covering the full CRUD spectrum.
+I did not finish 100%, in fact I finished the API and packaged it as a Microsevice. I had a plan to use a MySQL DB as the storage which sucked up a lot of time and really was not nesessary for the small scale of the task.
 
-There is a Task breakdown below followed by a rough time line I put together to "show my workings" - I Really have tried to be honest as I can and not try to hide any bad decissions I made as I think it is only fair.
+In the end I implemented a nice little protocol that writes to a CSV and altered it 5 different ways to accomedate the different API calls.
 
-I'm going to try and build it as a Docker image now and then I think I will draw a line under this.
+There is a Task breakdown below followed by a rough time line I put together to "show my workings" - I Really have tried to be honest as I can and not try to hide any bad decissions I made as I think it is only fair to show you my process warts and all.
+
+I'd like to think i'd have finished the task had I not spent 11-1630 trying to implement the DB - Live and Learn, I guess.
 
 ### Task breakdown & initial thoughts
 
@@ -40,7 +42,7 @@ I'm going to try and build it as a Docker image now and then I think I will draw
 
 ###### ~0930 Planning / Research
 
-Borrowed API code from [http://himarsh.org/build-restful-api-microservice-with-go/](http://himarsh.org/build-restful-api-microservice-with-go/) as a boilerplate for a RestAPI and Tests. Also kind of documented which is nice. This pretty much covers the backend of the project brief and on closer inspection has a Dockerfile ready and waiting in the accompanying repo. Taking the pressure off my writing code and allowing me to just refactor and repurpose what is here into a useable API for my nafarious purposes (Mwa ha ha ha ha...).
+Borrowed / Repurposed API code from [http://himarsh.org/build-restful-api-microservice-with-go/](http://himarsh.org/build-restful-api-microservice-with-go/) as a boilerplate for a RestAPI and Tests. It is a lso kind of documented which is nice. This pretty much covers the backend of the project brief and on closer inspection has a Dockerfile ready and waiting in the accompanying repo. Taking the pressure off my writing code and allowing me to just refactor and repurpose what is here into a useable API for my ###### ~2350 Delete working now for updatenafarious purposes (Mwa ha ha ha ha...).
 
 ###### ~1100 Copy/Paste/Refactor - DB Choices
 
@@ -133,7 +135,8 @@ Manual commands - I might get to putting these isn a dockerfile but right now I'
 
 ` select * from users;`
 
-<pre>+----+--------------+-------------+------------+
+<pre>
++----+--------------+-------------+------------+
 | id | user_name    | user_status | date       |
 +----+--------------+-------------+------------+
 |  1 | Richard Pape | Present     | 2018-03-22 |
@@ -157,7 +160,7 @@ I have commented out the lines that try to create the DB in the db.go file so I 
  - POST test  = 200
  - PUT  test  = 404
 
-Curl comes back withthe same...
+Curl comes back with the same...
 
  `docker `
 
@@ -211,7 +214,9 @@ I'd love to run MySQL as part of this but the brief does not require it and I ha
 Running =>
 `curl -i http://localhost:8080/api/v1/users`
 Returns =>
+<pre>
 `[{"id":"1","user_name":" Richard Pape","user_status":" Present","date":" 22-03-2018"}]`
+</pre>
 
 
 ###### ~2040 two down...
@@ -228,7 +233,15 @@ OK finally managed to do some coding and the API is working flawlessly
 
 Although I think the update function will allow a user to update with blank values.
 
-#### Have a play ---
+###### ~2350 Delete working now for update
+
+Spent some time building the docker image to realise I have not compiled the main.go - and test was failing where it was still looking for the DB - *Rookie mistake*
+
+###### ~0010 Done!
+
+Docker image working instructions at the bottom
+
+#### Have a play --- Local host examples
 
 If you `go run main.go` you can have a play using the following curls
 
@@ -246,3 +259,69 @@ If you `go run main.go` you can have a play using the following curls
     - Will remove the person at id number 3
 
 You'll see the affects in the users.csv file which took the place of the DB as each of these are called.
+
+
+### Docker instructions
+
+Run
+
+=>`docker build -t microservice-test .`
+
+then
+
+=> `docker run -P microservice-test`
+
+then `docker ps`
+
+Grab the `<Container-ID\>`
+
+then
+
+`docker inspect <Container-ID> | grep IPAddress`
+
+grab the `<\IP-Address\>`
+
+Then
+
+`curl -i <\IP-Address\>:8080/api/v1/users`
+
+just replace Localhost in the 'go run ...' examples with the `<\IP-Address\>`
+
+
+<pre>
+curl -i <\IP-Address\>:8080/api/v1/users
+</pre>
+
+- Should give a list of users in Json...
+
+<pre>
+curl -i <\IP-Address\>:8080/api/v1/users/1
+</pre>
+
+- Should just give you one user...
+
+<pre>
+curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_status\": \"No longer potus\", \"user_name\": \"Donald Trump\", "date": "04-11-2020" }" <\IP-Address\>:8080/api/v1/users
+</pre>
+
+- Will create a new user
+
+<pre>
+
+curl -i -X PUT -H "Content-Type: application/json" -d "{ \"user_status\": \"Potus\", \"user_name\": \"Donald Trump\", \"date\": \"01-04-2018\" }" <\IP-Address\>:8080/api/v1/users/3
+</pre>
+
+- Will update all of the fields
+
+<pre>
+curl -i -X DELETE <\IP-Address\>:8080/api/v1/users/3
+</pre>
+
+- Will remove the person at id number 3
+
+
+## I think that about covers it...
+
+Thanks for the oppertunity to do this - I have enjoyed it and learnt some lessons.
+
+Sorry for the typos and I hope to speak in the future
