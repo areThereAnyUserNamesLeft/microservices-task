@@ -10,7 +10,7 @@ In the end I implemented a nice little protocol that writes to a CSV and altered
 
 There is a Task breakdown below followed by a rough time line I put together to "show my workings" - I Really have tried to be honest as I can and not try to hide any bad decissions I made as I think it is only fair to show you my process warts and all.
 
-I'd like to think i'd have finished the task had I not spent 11-1630 trying to implement the DB - Live and Learn, I guess.
+I'd like to think i'd have finished the task had I not spent 11-1630 trying to implement the DB - Live and learn, I guess.
 
 ### Task breakdown & initial thoughts
 
