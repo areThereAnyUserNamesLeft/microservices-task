@@ -56,7 +56,6 @@ export default {
             getUserDetails(i) {
                 axios({ method: "GET", "url":"http://127.0.0.1:8090/api/v1/users/" + i, "data":this.input, "headers": {"content-type": "application/json" } }).then(result => {
                     this.response = result.data;
-                    location.reload()
                 }, error => {
                     console.error(error);
                 });
@@ -66,6 +65,7 @@ export default {
             deleteUserDetails(i) {
                 axios({ method: "DELETE", "url":"http://127.0.0.1:8090/api/v1/users/" + i, "data":this.input, "headers": {"content-type": "application/json" } }).then(result => {
                     this.response = result.data;
+                    location.reload()
                 }, error => {
                     console.error(error);
                 });
