@@ -324,4 +324,13 @@ curl -i -X DELETE <\IP-Address\>:8080/api/v1/users/3
 
 Thanks for the oppertunity to do this - I have enjoyed it and learnt some lessons.
 
-Sorry for the typos and I hope to speak in the future
+Sorry for the typos and I hope to speak in the future...
+
+
+### Post script
+
+I ended up finishing the app with a frontend built in Vue -
+
+If you start the server *locally* and then run `npm run dev` in  the `frontend/vueapp01` folder and then visit [localhost:8080](localhost:8080)
+
+You'll see an interface to allow you to Create, Read and Delete Users. 
