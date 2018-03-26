@@ -1,15 +1,15 @@
 <template>
     <div class="hello">
-        <p>Click the user name for more details:</p>
+        <p>Click the user name for more details or hover over for more options:</p>
         <ul>
             <li v-for="(n,index) in ip" v-on:click="getUserDetails(index + 1)" >
-                {{ ip[index].user_name }} is currently "{{ip[index].user_status}}" - <span class="onhover" v-on:click="deleteUserDetails(index + 1)">DELETE</span>
+                {{ ip[index].user_name }} is currently "{{ip[index].user_status}}" <span class="onhover" v-on:click="deleteUserDetails(index + 1)"> <span>DELETE</span></span>
             </li>
         </ul>
         <br />
         <br />
         <textarea>{{ response }}</textarea>
-        <p>Add users (Press F5 to refresh, if not instantly added):</p>
+        <p>Add users:</p>
         <input type="text" v-model="input.user_name" placeholder="User Name" />
         <input type="text" v-model="input.user_status" placeholder="User Status" />
         <input type="date" v-model="input.date" />
@@ -46,6 +46,7 @@ export default {
             sendData() {
                 axios({ method: "POST", "url": "http://127.0.0.1:8090/api/v1/users", "data":this.input, "headers": {"content-type": "application/json" } }).then(result => {
                     this.response = result.data;
+                    location.reload()
                 }, error => {
                     console.error(error);
                 });
@@ -55,6 +56,7 @@ export default {
             getUserDetails(i) {
                 axios({ method: "GET", "url":"http://127.0.0.1:8090/api/v1/users/" + i, "data":this.input, "headers": {"content-type": "application/json" } }).then(result => {
                     this.response = result.data;
+                    location.reload()
                 }, error => {
                     console.error(error);
                 });
@@ -114,6 +116,7 @@ export default {
     }
     input[type="date"]{
         padding: 4px;
+        padding-bottom: 3px
     }
     textarea {
         width: 600px;
@@ -123,8 +126,9 @@ export default {
         border: none;
         background: green;
         font-family: 'Cabin Sketch', Cursive;
-        padding: 15px;
+        padding: 18px;
         color: whitesmoke;
+        padding-bottom: 11px;
     }
     .onhover {
         color: red;
